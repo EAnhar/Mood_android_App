@@ -1,27 +1,25 @@
 package com.example.moodapp;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.Manifest;
+import androidx.appcompat.widget.SwitchCompat;
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.Calendar;
 
-import com.google.android.gms.cast.framework.media.ImagePicker;
-
-import droidninja.filepicker.FilePickerBuilder;
-import droidninja.filepicker.FilePickerConst;
-import pub.devrel.easypermissions.EasyPermissions;
 
 public class Setting extends AppCompatActivity {
 
@@ -29,6 +27,7 @@ public class Setting extends AppCompatActivity {
     ImageView profileImage  , profileImageBefore;
     final int PICK_IMAGE = 100;
     Uri imageUri;
+    SwitchCompat notifySwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +39,53 @@ public class Setting extends AppCompatActivity {
         dialog = new Dialog(Setting.this);
         dialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.dialog_background));
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT ,ViewGroup.LayoutParams.WRAP_CONTENT);
+
+
+        //new
+        // notification
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 9);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+
+        Intent notificationIntent = new Intent(this, AlarmReceiver.class);
+        notificationIntent.setAction("MY_NOTIFICATION_MESSAGE");
+
+        PendingIntent broadcast = PendingIntent.getBroadcast(this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        notifySwitch = findViewById(R.id.notification_mode_btn);
+
+
+        // Save switch state in shared preferences
+        SharedPreferences sharedPreferences=getSharedPreferences("save",MODE_PRIVATE);
+        notifySwitch.setChecked(sharedPreferences.getBoolean("value",true));
+
+        notifySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(notifySwitch.isChecked()) {
+                    //ON Blue
+                    // When switch checked
+                    SharedPreferences.Editor editor=getSharedPreferences("save",MODE_PRIVATE).edit();
+                    editor.putBoolean("value",true);
+                    editor.apply();
+                    notifySwitch.setChecked(true);
+                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_HALF_DAY , broadcast);
+
+                }else {
+                    //OFF orange
+                    SharedPreferences.Editor editor=getSharedPreferences("save",MODE_PRIVATE).edit();
+                    editor.putBoolean("value",false);
+                    editor.apply();
+                    notifySwitch.setChecked(false);
+                    if(broadcast != null)
+                        alarmManager.cancel(broadcast);
+                }
+            }
+        });
+
+        // to here
 
     }
     // setting dialog initialization
@@ -79,7 +125,7 @@ public class Setting extends AppCompatActivity {
 
     public void Choose_Picture (View view){
         // Assign variables
-        profileImage = (ImageView)findViewById(R.id.profileImage) ;
+        profileImage = findViewById(R.id.profileImage);
         profileImageBefore = dialog.findViewById(R.id.profileImageBefore) ;
 
         // pick image from galley
@@ -89,6 +135,7 @@ public class Setting extends AppCompatActivity {
 
     // sava new profile image and name
     public void save_Profile_Changes(View view){
+
         //get the new name
         EditText newName = dialog.findViewById(R.id.newName);
         //to set the new name
@@ -133,16 +180,4 @@ public class Setting extends AppCompatActivity {
         //// maybe need more function for logout process//////
     }
 
-
-    //////////////////////not completed /////////////////////
-    public void notification_mode(View view) {
-        Switch notify = findViewById(R.id.notification_mode);
-
-        if(notify.isChecked()){
-            Toast.makeText(Setting.this,"Notification ON", Toast.LENGTH_LONG).show();
-        }else{
-            Toast.makeText(Setting.this,"Notification OFF", Toast.LENGTH_LONG).show();
-
-        }
-    }
 }

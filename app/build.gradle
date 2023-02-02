@@ -4,12 +4,12 @@ plugins {
 
 android {
     namespace 'com.example.moodapp'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.example.moodapp"
         minSdk 21
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -44,6 +44,7 @@ dependencies {
     implementation 'com.droidninja:filepicker:2.2.5'
     implementation 'com.github.bumptech.glide:glide:4.13.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.3'
+    implementation 'androidx.work:work-runtime:2.7.1'
 //
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'

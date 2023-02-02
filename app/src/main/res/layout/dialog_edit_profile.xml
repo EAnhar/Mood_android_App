@@ -70,7 +70,7 @@
         android:id="@+id/newName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="new Name"
+        android:hint="New Name"
         android:layout_marginHorizontal="50dp"
         android:layout_marginVertical="30dp"
         />

@@ -100,19 +100,6 @@
 
             </LinearLayout>
 
-<!--            &lt;!&ndash;      General setting      &ndash;&gt;-->
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_centerInParent="true"-->
-<!--                android:layout_marginTop="40dp"-->
-<!--                android:layout_marginStart="20dp"-->
-<!--                android:layout_marginEnd="20dp"-->
-<!--                android:text="General Settings"-->
-<!--                android:textColor="@color/black"-->
-<!--                android:textSize="18sp"-->
-<!--                android:textStyle="bold" />-->
-
             <!--    Settings buttons      -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -187,17 +174,19 @@
                         android:layout_toEndOf="@id/notificationsIcon"
                         android:text="Notifications"
                         android:textStyle="bold"
-
                         android:textColor="@color/black"
                         />
+
+                       <!--  new-->
                     <androidx.appcompat.widget.SwitchCompat
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
+                        android:textOn="on"
+                        android:textOff="off"
                         android:switchMinWidth="50dp"
-                        android:id="@+id/notification_mode"
-                        android:onClick="notification_mode"
+                        android:id="@+id/notification_mode_btn"
                         android:theme="@style/nightModeSwitch" />
                 </RelativeLayout>
             </LinearLayout>
