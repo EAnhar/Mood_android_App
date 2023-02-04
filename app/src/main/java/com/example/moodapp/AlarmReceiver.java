@@ -1,6 +1,9 @@
 package com.example.moodapp;
 
 
+    import static androidx.core.app.NotificationManagerCompat.IMPORTANCE_DEFAULT;
+
+    import android.app.NotificationChannel;
     import android.app.NotificationManager;
     import android.app.PendingIntent;
     import android.app.TaskStackBuilder;
@@ -8,12 +11,16 @@ package com.example.moodapp;
     import android.content.Context;
     import android.content.Intent;
     import android.graphics.BitmapFactory;
+    import android.os.Build;
+
+
 
     import androidx.core.app.NotificationCompat;
 
+
 public class AlarmReceiver extends BroadcastReceiver{
 
-    private static final String CHANNEL_ID = "com.singhajit.notificationDemo.channelId";
+    private static final String CHANNEL_ID = "Anhar_channelId";
 
     //    called when class gets triggered
     @Override
@@ -30,17 +37,31 @@ public class AlarmReceiver extends BroadcastReceiver{
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addParentStack(Setting.class);//Parent Activity
         stackBuilder.addNextIntent(notificationIntent);
-        PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT );
+        PendingIntent pendingIntent = stackBuilder.getPendingIntent(100, PendingIntent.FLAG_UPDATE_CURRENT );
 
         // notification build and style
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context,CHANNEL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setContentIntent(pendingIntent)
                 .setContentTitle("Mood")
                 .setContentText("How are you feeling today?")
                 .setSmallIcon(R.drawable.ic_star)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_app_png))
                 .setAutoCancel(true)
+//                .setSound(sound)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            builder.setChannelId(CHANNEL_ID);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "NotificationDemo",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            notificationManager.createNotificationChannel(channel);
+        }
+
 
         if (intent.getAction().equals("MY_NOTIFICATION_MESSAGE")) {
             notificationManager.notify(100,builder.build());

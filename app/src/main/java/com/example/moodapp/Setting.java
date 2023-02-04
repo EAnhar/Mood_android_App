@@ -44,9 +44,9 @@ public class Setting extends AppCompatActivity {
         //new
         // notification
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, 9);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 7);
+        cal.set(Calendar.MINUTE, 30);
+        cal.set(Calendar.SECOND, 5);
 
         Intent notificationIntent = new Intent(this, AlarmReceiver.class);
         notificationIntent.setAction("MY_NOTIFICATION_MESSAGE");
@@ -70,15 +70,13 @@ public class Setting extends AppCompatActivity {
                     SharedPreferences.Editor editor=getSharedPreferences("save",MODE_PRIVATE).edit();
                     editor.putBoolean("value",true);
                     editor.apply();
-                    notifySwitch.setChecked(true);
-                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_HALF_DAY , broadcast);
+                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 1000*60*1 , broadcast);
 
                 }else {
                     //OFF orange
                     SharedPreferences.Editor editor=getSharedPreferences("save",MODE_PRIVATE).edit();
                     editor.putBoolean("value",false);
                     editor.apply();
-                    notifySwitch.setChecked(false);
                     if(broadcast != null)
                         alarmManager.cancel(broadcast);
                 }
